@@ -15,6 +15,14 @@ app.use("/api/events", require("./routes/eventRoutes"));
 app.use("/api/payment", require("./routes/paymentRoutes"));
 app.use("/api/tickets", require("./routes/ticketRoutes"));
 app.use("/api/tickets", ticketRoutes);
+app.use(
+  "/api/payment/webhook",
+  express.json({
+    verify: (req, res, buf) => {
+      req.rawBody = buf;
+    },
+  }),
+);
 
 // test route
 app.get("/", (req, res) => {
