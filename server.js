@@ -1,7 +1,12 @@
 require("dotenv").config();
 const express = require("express");
 const ticketRoutes = require("./routes/ticketRoutes");
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpec = require("./config/swagger");
+
 const app = express();
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // connect to DB
 const connectDB = require("./config/db");
