@@ -3,8 +3,61 @@ const express = require("express");
 const ticketRoutes = require("./routes/ticketRoutes");
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./config/swagger");
+const rateLimit = require("express-rate-limit");
+const errorHandler = require("./middleware/errorHandler");
+const helmet = require("helmet");
+const cors = require("cors");
+const hpp = require("hpp");
+const morgan = require("morgan");
+const logger = require("./utils/logger");
+const { httpRequestDuration } = require("./utils/metric");
 
 const app = express();
+
+// send morgan logs into winston
+const stream = {
+  write: (message) => logger.info(message.trim()),
+};
+
+// middleware to read JSON body
+app.use(express.json());
+app.use(morgan("combined", { stream }));
+app.use((req, res, next) => {
+  const end = httpRequestDuration.startTimer();
+
+  res.on("finish", () => {
+    end({
+      method: req.method,
+      route: req.route?.path || req.originalUrl,
+      status: res.statusCode,
+    });
+  });
+
+  next();
+});
+
+// ✅ Security middlewares
+app.use(helmet());
+app.use(hpp());
+app.use(
+  cors({
+    origin: ["http://localhost:3000"], // frontend URL
+    methods: ["GET", "POST"],
+    credentials: true,
+  }),
+);
+
+// rate limiter to prevent abuse
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: {
+    success: false,
+    message: "Too many requests, please try again later",
+  },
+});
+
+app.use(limiter);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
@@ -12,8 +65,8 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 const connectDB = require("./config/db");
 connectDB();
 
-// middleware to read JSON body
-app.use(express.json());
+// must be LAST middleware
+app.use(errorHandler);
 
 // routes
 app.use("/api/events", require("./routes/eventRoutes"));
@@ -28,14 +81,52 @@ app.use(
     },
   }),
 );
-
 // test route
 app.get("/", (req, res) => {
   res.send("API running...");
 });
 
+// metrics endpoint
+app.get("/metrics", async (req, res) => {
+  res.set("Content-Type", client.register.contentType);
+
+  res.end(await client.register.metrics());
+});
+
+// centralized error handler
+app.use((err, req, res, next) => {
+  logger.error("Unhandled error", {
+    message: err.message,
+    stack: err.stack,
+  });
+
+  res.status(500).json({
+    success: false,
+    message: "Internal Server Error",
+  });
+});
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  logger.info(`Server running on port ${PORT}`);
 });
+
+/*
+require("dotenv").config();
+const express = require("express");
+const app = express();
+const eventRoutes = require("./routes/eventRoutes");
+const connectDB = require("./config/db");
+
+app.use(express.json());
+
+connectDB(); // ✅ MUST BE BEFORE routes
+
+// routes
+app.use("/api/events", eventRoutes);
+
+app.listen(3000, () => {
+  console.log("Server running...");
+});
+*/

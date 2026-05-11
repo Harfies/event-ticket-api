@@ -47,7 +47,19 @@ https://your-app-name.onrender.com
 5. Email sent to user
 6. Ticket verified via QR scan
 
-🛡️ Security
+## 🧠 Challenges & Solutions
 
-- Paystack webhook signature validation
-- Environment variable protection
+- Webhook security → Solved using Paystack signature verification
+- QR code email issues → Fixed using base64 + CID embedding
+- Ticket validation → Prevented reuse with `isUsed` flag
+
+## 🔐 Security
+
+- Verified Paystack webhook using HMAC SHA512
+- Environment variables used for sensitive data
+- Prevented duplicate ticket usage
+
+## ⚡ Performance
+
+- Asynchronous processing for webhook events
+- Efficient MongoDB queries using indexed fields

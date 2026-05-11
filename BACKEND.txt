@@ -1,0 +1,118 @@
+**Webhook Security (Quick Note)**
+
+* Webhook endpoints are **public** → anyone can send requests
+* Never trust request body alone
+
+**Main Protection: Signature Verification (Stripe)**
+
+* Use `Stripe-Signature` header
+* Verify with your `STRIPE_WEBHOOK_SECRET`
+* If verification fails → **reject request (400)**
+
+**Extras (Best Practice)**
+
+* Check event type (`checkout.session.completed`)
+* Ensure **idempotency** (avoid duplicate processing)
+* Validate amount/metadata against your DB
+* Optional: IP whitelist (secondary layer only)
+
+**Key Idea:**
+
+> Trust only requests that pass **cryptographic verification**, not just JSON payload.
+
+
+**Backend Security & Performance (Quick Notes)**
+
+---
+
+### ⚡ Rate Limiting
+
+* Limit number of requests per IP/user (e.g. 100 req/min)
+* Prevents **abuse, brute force, API flooding**
+* Returns **429 Too Many Requests**
+
+---
+
+### 🚦 Throttling
+
+* Slows down requests instead of blocking
+* Example: queue or delay excess traffic
+* Keeps system stable under load
+
+---
+
+### 🧱 Authentication vs Authorization
+
+* **Auth (Authentication):** Who are you? (JWT, OAuth)
+* **Authorization:** What can you access? (roles, permissions)
+
+---
+
+### 🔐 Input Validation & Sanitization
+
+* Never trust user input
+* Prevents **SQL Injection, XSS**
+* Use libraries like Joi / Zod
+
+---
+
+### 🧠 Idempotency
+
+* Same request = same result (no duplicates)
+* Important for payments/webhooks
+
+---
+
+### 🚫 CORS
+
+* Controls which domains can access your API
+* Prevents unauthorized frontend calls
+
+---
+
+### 🛡️ Helmet (Security Headers)
+
+* Adds HTTP headers to protect from common attacks
+* Example: XSS, clickjacking
+
+---
+
+### 📉 Logging & Monitoring
+
+* Track errors, requests, suspicious activity
+* Use tools like Winston, Morgan
+
+---
+
+### 🔁 Retry & Timeout
+
+* Set request time limits
+* Retry failed external calls safely
+
+---
+
+### 📦 Caching
+
+* Store frequent responses (Redis, memory)
+* Reduces DB load, improves speed
+
+---
+
+### 🧯 Error Handling
+
+* Don’t expose internal errors to users
+* Return clean, consistent responses
+
+---
+
+### 🔑 Environment Variables
+
+* Store secrets (API keys, DB creds) securely
+* Never hardcode them
+
+---
+
+### 💡 Quick Mental Model
+
+> Secure = “Block bad requests”
+> Efficient = “Handle good requests fast and safely”

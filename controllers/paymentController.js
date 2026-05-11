@@ -5,171 +5,89 @@ const Ticket = require("../models/ticketModel");
 const crypto = require("crypto");
 const generateQR = require("../utils/generateQR");
 const ticketTemplate = require("../utils/emailTemplate");
+const { getEnvironmentData } = require("worker_threads");
+const asyncHandler = require("../middleware/asyncHandler");
+const { initializePaymentSchema } = require("../validators/paymentValidator");
+const logger = require("../utils/logger");
 
-// initialize payment
-exports.initializePayment = async (req, res) => {
-  const { email, eventId } = req.body;
+exports.initializePayment = asyncHandler(async (req, res) => {
+  // ✅ 1. VALIDATE FIRST (TOP OF FUNCTION)
+  const { error } = initializePaymentSchema.validate(req.body);
 
-  const event = eventModel.getEventById(eventId);
-
-  if (!event) {
-    return res.status(404).json({ message: "Event not found" });
+  if (error) {
+    return res.status(400).json({
+      success: false,
+      message: error.details[0].message,
+    });
   }
 
   try {
+    const { email, eventId } = req.body;
+
+    const event = await eventModel.findById(eventId);
+
+    if (!event) {
+      return res.status(404).json({
+        message: "Event not found",
+      });
+    }
+
+    const amount = event.price * 100;
+
     const response = await axios.post(
       "https://api.paystack.co/transaction/initialize",
       {
         email,
-        amount: event.price * 100,
+        amount,
+        metadata: {
+          eventID: event._id.toString(),
+        },
       },
       {
         headers: {
           Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+          "Content-Type": "application/json",
         },
       },
     );
-
+    logger.info("Payment initialized successfully", {
+      email,
+      eventId,
+      amount,
+    });
     res.json(response.data);
   } catch (error) {
-    console.log(error.message);
-    res.status(500).json({ error: "Payment failed" });
+    logger.error("Payment initialization failed", {
+      message: error.message,
+      paystackError: error.response?.data,
+      stack: error.stack,
+    });
+    res.status(500).json({
+      error: "Payment failed",
+    });
   }
-};
-
-// verify payment
-/*exports.verifyPayment = async (req, res) => {
-  const { reference, email, eventId } = req.body;
-
-  // get event from model
-  const event = eventModel.getEventById(eventId);
-
-  if (!event) {
-    return res.status(404).json({ message: "Event not found" });
-  }
-
-  try {
-    // verify transaction from Paystack
-    const response = await axios.get(
-      `https://api.paystack.co/transaction/verify/${reference}`,
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.PAYSTACK_SECRET}`,
-        },
-      },
-    );
-
-    // check if payment successful
-    if (response.data.data.status === "success") {
-      // generate ticket ID
-      const ticketId = Math.floor(Math.random() * 1000000);
-
-      // send email
-      await sendEmail(
-        email,
-        "Your Ticket 🎟️",
-        `Event: ${event.name}\nTicket ID: ${ticketId}`,
-      );
-
-      return res.json({
-        message: "Payment verified & ticket sent",
-      });
-    }
-
-    res.status(400).json({ message: "Payment not successful" });
-  } catch (error) {
-    console.log(error.response?.data || error.message);
-    res.status(500).json({ error: "Verification failed" });
-  }
-};*/
-
-//webhook handler
-/*exports.handleWebhook = async (req, res) => {
-  console.log("🔥 Webhook received");
-
-  try {
-    const event = req.body;
-
-    console.log("👉 Event type:", event.event);
-
-    if (event.event === "charge.success") {
-      console.log("✅ Charge success confirmed");
-
-      const email = event.data.customer.email;
-      console.log("📧 Email:", email);
-
-      console.log("📦 Raw metadata:", event.data.metadata);
-
-      // SAFE metadata handling
-      let eventName = "Event";
-
-      try {
-        if (event.data.metadata) {
-          const parsed =
-            typeof event.data.metadata === "string"
-              ? JSON.parse(event.data.metadata)
-              : event.data.metadata;
-
-          eventName = parsed.eventName || "Event";
-        }
-      } catch (err) {
-        console.log("⚠️ Metadata parse error:", err.message);
-      }
-
-      console.log("🎟️ Event name:", eventName);
-
-      const ticketId = Math.floor(Math.random() * 1000000);
-      console.log("🎫 Ticket ID:", ticketId);
-
-      // Save ticket to DB
-      await Ticket.create({
-        email,
-        eventName,
-        ticketId,
-        reference: event.data.reference,
-        paidAt: new Date(),
-      });
-      console.log("🚀 About to send email...");
-
-      await sendEmail(
-        email,
-        "Your Ticket 🎟️",
-        `Event: ${eventName}\nTicket ID: ${ticketId}`,
-      );
-
-      console.log("✅ Email function executed");
-    } else {
-      console.log("❌ Not charge.success");
-    }
-  } catch (error) {
-    console.log("🔥 Webhook error:", error.message);
-  }
-
-  res.sendStatus(200);
-};*/
+});
 
 // SECURE WEBHOOK
-
-exports.handleWebhook = async (req, res) => {
+exports.handleWebhook = asyncHandler(async (req, res) => {
   try {
-    // ===============================
     // 1. VERIFY PAYSTACK SIGNATURE
-    // ===============================
     const hash = crypto
       .createHmac("sha512", process.env.PAYSTACK_SECRET_KEY)
       .update(JSON.stringify(req.body))
       .digest("hex");
 
     if (hash !== req.headers["x-paystack-signature"]) {
-      console.log("❌ Invalid signature");
+      logger.warn("Invalid Paystack webhook signature");
       return res.sendStatus(401);
     }
 
-    console.log("✅ Paystack signature verified");
-
+    logger.info("Paystack signature verified");
     const event = req.body;
 
-    console.log("📩 Webhook received:", event.event);
+    logger.info("📩 Webhook received", {
+      event: event.event,
+    });
 
     // ===============================
     // 2. HANDLE SUCCESSFUL PAYMENT
@@ -178,9 +96,33 @@ exports.handleWebhook = async (req, res) => {
       try {
         const email = event.data.customer.email;
         const reference = event.data.reference;
+        const eventId = event.data.metadata?.eventID;
 
-        console.log("💰 Payment successful for:", email);
+        logger.info("Payment metadata received", {
+          metadata: event.data.metadata,
+        });
+        if (!eventId) {
+          logger.warn("❌ No event ID found in Paystack metadata");
+          return;
+        }
 
+        const eventData = await eventModel.findById(eventId);
+
+        if (!eventData) {
+          logger.warn("Event not found during webhook processing", {
+            eventId,
+          });
+          return;
+        }
+
+        logger.info("Event found", {
+          eventName: eventData.name,
+          eventId,
+        });
+        logger.info("Event found", {
+          eventName: eventData.name,
+          eventId,
+        });
         // ===============================
         // 3. GENERATE TICKET ID
         // ===============================
@@ -191,14 +133,18 @@ exports.handleWebhook = async (req, res) => {
         // ===============================
         const ticket = await Ticket.create({
           email,
-          eventName: "Event",
+          eventName: eventData.name,
+          eventId: eventData._id,
           ticketId,
           reference,
           paidAt: new Date(),
         });
 
-        console.log("🎟️ Ticket saved:", ticket);
-
+        logger.info("Ticket created successfully", {
+          ticketId,
+          email,
+          eventName: eventData.name,
+        });
         // ===============================
         // 5. GENERATE QR CODE
         // ===============================
@@ -206,31 +152,36 @@ exports.handleWebhook = async (req, res) => {
         const qrImage = await generateQR(qrData);
 
         if (!qrImage) {
-          console.log("❌ QR generation failed");
+          logger.error("QR code generation failed");
           return res.sendStatus(500);
         }
 
-        console.log("🔳 QR generated");
-
+        logger.info("QR code generated");
         // ===============================
         // 6. PREPARE EMAIL
         // ===============================
         const html = ticketTemplate({
-          eventName: "Event",
+          eventName: eventData.name,
           ticketId,
           reference,
-          date: "25th May 2026",
-          location: "Lagos, Nigeria",
+          date: eventData.date,
+          location: eventData.location,
         });
 
         // ===============================
         // 7. SEND EMAIL WITH QR
         // ===============================
-        await sendEmail(email, "Your Ticket 🎟️", html, qrImage);
 
-        console.log("📧 Ticket email sent");
+        await sendEmail(email, "Your Ticket 🎟️", html, qrImage);
+        logger.info("Ticket email sent successfully", {
+          email,
+          ticketId,
+        });
       } catch (err) {
-        console.log("❌ Webhook inner error:", err.message);
+        logger.error("Webhook inner processing failed", {
+          message: err.message,
+          stack: err.stack,
+        });
       }
     }
 
@@ -239,7 +190,10 @@ exports.handleWebhook = async (req, res) => {
     // ===============================
     res.sendStatus(200);
   } catch (error) {
-    console.log("❌ Webhook error:", error.message);
+    logger.error("Webhook processing failed", {
+      message: error.message,
+      stack: error.stack,
+    });
     res.sendStatus(500);
   }
-};
+});
