@@ -1,65 +1,283 @@
-A backend API that allows users to book event tickets, make payments via Paystack, receive QR-coded tickets via email, and verify tickets at entry.
+# Event Ticket API
 
-🚀 Features
+A production-ready backend API for event ticketing built with Node.js, Express, MongoDB, and Paystack.
 
-- 💳 Paystack payment integration
-- 📧 Email ticket delivery
-- 🔳 QR code generation
-- ✅ Ticket verification endpoint
-- 🔐 Webhook security (signature verification)
-- 📚 Swagger API documentation
+The system allows users to:
 
-🛠️ Tech Stack
+- Create and manage events
+- Purchase tickets securely via Paystack
+- Receive ticket emails with QR codes
+- Verify tickets in real time
+- Monitor application metrics
+- Track logs and errors
+
+---
+
+# Features
+
+## Event Management
+
+- Create events
+- Fetch all events
+- Search events by name
+- Pagination support
+
+## Payment Processing
+
+- Paystack payment integration
+- Secure webhook verification
+- Metadata handling
+
+## Ticket System
+
+- Automatic ticket generation
+- Unique ticket IDs
+- QR code generation
+- Ticket verification endpoint
+- Prevent duplicate ticket usage
+
+## Email System
+
+- Ticket confirmation emails
+- QR code email attachment
+- HTML email templates
+
+## Security
+
+- Helmet security headers
+- Rate limiting
+- Joi input validation
+- Secure webhook signature verification
+- Environment variable protection
+
+## Observability
+
+- Winston structured logging
+- Morgan request logging
+- Prometheus metrics endpoint
+- Centralized error handling
+
+---
+
+# Tech Stack
 
 - Node.js
 - Express.js
-- MongoDB
+- MongoDB + Mongoose
 - Paystack API
 - Nodemailer
+- QRCode
+- Joi
+- Winston
+- Morgan
+- Prometheus Client
+- Swagger
 
-⚙️ Installation
-git clone https://github.com/your-username/event-ticket-api.git
+---
+
+# API Documentation
+
+Swagger Documentation:
+
+```bash
+https://your-render-url.onrender.com/api-docs
+```
+
+---
+
+# Base URL
+
+Production:
+
+```bash
+https://your-render-url.onrender.com
+```
+
+Local:
+
+```bash
+http://localhost:3000
+```
+
+---
+
+# Installation
+
+## Clone Repository
+
+```bash
+git clone https://github.com/yourusername/event-ticket-api.git
+```
+
+## Navigate Into Project
+
+```bash
 cd event-ticket-api
-npm install
+```
 
-🔐 Environment Variables
+## Install Dependencies
+
+```bash
+npm install
+```
+
+---
+
+# Environment Variables
+
 Create a `.env` file:
 
-MONGO_URI=
-PAYSTACK_SECRET_KEY=
-EMAIL_USER=
-EMAIL_PASS=
-BASE_URL=
+```env
+PORT=3000
+MONGO_URI=your_mongodb_connection
+PAYSTACK_SECRET_KEY=your_paystack_secret
+EMAIL_USER=your_email
+EMAIL_PASS=your_password
+CLIENT_URL=http://localhost:3000
+```
 
-📡 API Documentation
-Swagger Docs:
-http://localhost:3000/api-docs
+---
 
-🌍 Live Demo
-https://your-app-name.onrender.com
+# Running the Project
 
-📸 Sample Flow
+## Development
 
-1. User initiates payment
-2. Paystack webhook confirms payment
-3. Ticket is created
-4. QR code is generated
-5. Email sent to user
-6. Ticket verified via QR scan
+```bash
+npm run dev
+```
 
-## 🧠 Challenges & Solutions
+## Production
 
-- Webhook security → Solved using Paystack signature verification
-- QR code email issues → Fixed using base64 + CID embedding
-- Ticket validation → Prevented reuse with `isUsed` flag
+```bash
+npm start
+```
 
-## 🔐 Security
+---
 
-- Verified Paystack webhook using HMAC SHA512
-- Environment variables used for sensitive data
-- Prevented duplicate ticket usage
+# API Endpoints
 
-## ⚡ Performance
+## Events
 
-- Asynchronous processing for webhook events
-- Efficient MongoDB queries using indexed fields
+### Create Event
+
+```http
+POST /api/events
+```
+
+### Get Events
+
+```http
+GET /api/events
+```
+
+### Search Events
+
+```http
+GET /api/events?name=tech
+```
+
+---
+
+## Payments
+
+### Initialize Payment
+
+```http
+POST /api/payment/initialize
+```
+
+### Paystack Webhook
+
+```http
+POST /api/payment/webhook
+```
+
+---
+
+## Tickets
+
+### Verify Ticket
+
+```http
+GET /api/tickets/verify/:ticketId
+```
+
+### Get User Tickets
+
+```http
+GET /api/tickets?email=user@gmail.com
+```
+
+---
+
+# Metrics Endpoint
+
+Prometheus metrics:
+
+```http
+GET /metrics
+```
+
+---
+
+# Logging
+
+The application uses:
+
+- Winston for structured logging
+- Morgan for request logging
+
+Log files:
+
+```bash
+logs/error.log
+logs/combined.log
+```
+
+---
+
+# Security Features
+
+- API rate limiting
+- Secure environment variables
+- Joi request validation
+- Helmet HTTP security
+- Paystack webhook verification
+
+---
+
+# Deployment
+
+Hosted on Render.
+
+Deployment Steps:
+
+1. Push code to GitHub
+2. Connect repository to Render
+3. Add environment variables
+4. Deploy application
+
+---
+
+# Future Improvements
+
+- Authentication & Authorization
+- Admin dashboard
+- Ticket scanning frontend
+- Background jobs with queues
+- Redis caching
+- Analytics dashboard
+
+---
+
+# Author
+
+Afeez Akinsola
+
+Backend Developer
+
+---
+
+# License
+
+MIT License

@@ -1,25 +1,29 @@
-const swaggerJSDoc = require("swagger-jsdoc");
+const swaggerJsdoc = require("swagger-jsdoc");
 
 const options = {
   definition: {
     openapi: "3.0.0",
+
     info: {
-      title: "Event Ticket Booking API",
+      title: "Event Ticket API",
       version: "1.0.0",
-      description: "API for booking events, payments, and ticket verification",
-    },
-    servers: [
-      {
-        url: "http://localhost:3000",
+      description:
+        "Production-ready event ticketing backend with payments, QR verification, email delivery, logging, and metrics.",
+
+      contact: {
+        name: "Afeez Akinsola",
+        email: "akinsolaafeez82@gmail.com",
       },
+    },
+
+    servers: [
       {
         url: "https://event-ticket-api.onrender.com",
       },
     ],
   },
-  apis: ["./routes/*.js"], // where your routes are
+
+  apis: ["./routes/*.js"],
 };
 
-const swaggerSpec = swaggerJSDoc(options);
-
-module.exports = swaggerSpec;
+module.exports = swaggerJsdoc(options);

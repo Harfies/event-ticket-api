@@ -14,6 +14,11 @@ const { httpRequestDuration } = require("./utils/metric");
 
 const app = express();
 
+//app.use(express.json({ limit: "10mb" })); // increase payload limit for webhook
+//app.use(express.urlencoded({ extended: true, limit: "10mb" })); // for parsing application/x-www-form-urlencoded
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 // send morgan logs into winston
 const stream = {
   write: (message) => logger.info(message.trim()),
@@ -111,22 +116,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   logger.info(`Server running on port ${PORT}`);
 });
-
-/*
-require("dotenv").config();
-const express = require("express");
-const app = express();
-const eventRoutes = require("./routes/eventRoutes");
-const connectDB = require("./config/db");
-
-app.use(express.json());
-
-connectDB(); // ✅ MUST BE BEFORE routes
-
-// routes
-app.use("/api/events", eventRoutes);
-
-app.listen(3000, () => {
-  console.log("Server running...");
-});
-*/
