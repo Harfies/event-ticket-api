@@ -80,7 +80,7 @@ The system allows users to:
 Swagger Documentation:
 
 ```bash
-https://your-render-url.onrender.com/api-docs
+https://event-ticket-api.onrender.com/api-docs
 ```
 
 ---
@@ -89,15 +89,14 @@ https://your-render-url.onrender.com/api-docs
 
 Production:
 
-```bash
-https://your-render-url.onrender.com
-```
+````bash
+https://event-ticket-api.onrender.com```
 
 Local:
 
 ```bash
 http://localhost:3000
-```
+````
 
 ---
 
@@ -106,7 +105,7 @@ http://localhost:3000
 ## Clone Repository
 
 ```bash
-git clone https://github.com/yourusername/event-ticket-api.git
+git clone https://github.com/Harfies/event-ticket-api.git
 ```
 
 ## Navigate Into Project
@@ -119,21 +118,6 @@ cd event-ticket-api
 
 ```bash
 npm install
-```
-
----
-
-# Environment Variables
-
-Create a `.env` file:
-
-```env
-PORT=3000
-MONGO_URI=your_mongodb_connection
-PAYSTACK_SECRET_KEY=your_paystack_secret
-EMAIL_USER=your_email
-EMAIL_PASS=your_password
-CLIENT_URL=http://localhost:3000
 ```
 
 ---
@@ -273,6 +257,8 @@ Deployment Steps:
 # Author
 
 Afeez Akinsola
+github: @Harfies
+email: akinsolaafeez82@gmail.com
 
 Backend Developer
 
