@@ -1,10 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const {
-  verifyTicket,
-  getUserTickets,
-} = require("../controllers/ticketController");
+const { verifyTicket } = require("../controllers/ticketController");
 
 // ===============================
 // SWAGGER TAG
@@ -47,36 +44,6 @@ const {
  *         description: Server error
  */
 router.get("/verify/:ticketId", verifyTicket);
-
-// ===============================
-// GET USER TICKETS
-// ===============================
-
-/**
- * @swagger
- * /api/tickets:
- *   get:
- *     summary: Get tickets by email
- *     description: Fetch all tickets associated with a user email.
- *     tags: [Tickets]
- *     parameters:
- *       - in: query
- *         name: email
- *         required: true
- *         schema:
- *           type: string
- *         example: user@gmail.com
- *     responses:
- *       200:
- *         description: Tickets fetched successfully
- *       400:
- *         description: Email is required
- *       404:
- *         description: No tickets found
- *       500:
- *         description: Server error
- */
-//router.get("/", getUserTickets);
 
 // ===============================
 // EXPORT ROUTER
