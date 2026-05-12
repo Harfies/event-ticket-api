@@ -76,7 +76,7 @@ router.get("/verify/:ticketId", verifyTicket);
  *       500:
  *         description: Server error
  */
-router.get("/", getUserTickets);
+//router.get("/", getUserTickets);
 
 // ===============================
 // EXPORT ROUTER
