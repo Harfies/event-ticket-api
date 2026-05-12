@@ -64,7 +64,7 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+//app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // connect to DB
 const connectDB = require("./config/db");
