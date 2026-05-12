@@ -27,8 +27,8 @@ const paymentLimiter = rateLimit({
 /**
  * @swagger
  * tags:
- *   name: Payments
- *   description: Payment and webhook endpoints
+ *   - name: Payments
+ *     description: Payment and webhook endpoints
  */
 
 // ===============================

@@ -10,8 +10,8 @@ const { verifyTicket } = require("../controllers/ticketController");
 /**
  * @swagger
  * tags:
- *   name: Tickets
- *   description: Ticket management and verification endpoints
+ *   - name: Tickets
+ *     description: Ticket management and verification endpoints
  */
 
 // ===============================
