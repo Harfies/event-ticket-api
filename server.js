@@ -1,8 +1,6 @@
 require("dotenv").config();
 const express = require("express");
 const ticketRoutes = require("./routes/ticketRoutes");
-//const swaggerUi = require("swagger-ui-express");
-//const swaggerSpec = require("./config/swagger");
 const rateLimit = require("express-rate-limit");
 const errorHandler = require("./middleware/errorHandler");
 const helmet = require("helmet");
@@ -14,10 +12,8 @@ const { httpRequestDuration } = require("./utils/metric");
 
 const app = express();
 
-//app.use(express.json({ limit: "10mb" })); // increase payload limit for webhook
-//app.use(express.urlencoded({ extended: true, limit: "10mb" })); // for parsing application/x-www-form-urlencoded
-
-//app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use(express.json({ limit: "10mb" })); // increase payload limit for webhook
+app.use(express.urlencoded({ extended: true, limit: "10mb" })); // for parsing application/x-www-form-urlencoded
 
 // send morgan logs into winston
 const stream = {
@@ -63,8 +59,6 @@ const limiter = rateLimit({
 });
 
 app.use(limiter);
-
-//app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // connect to DB
 const connectDB = require("./config/db");
