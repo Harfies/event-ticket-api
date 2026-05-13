@@ -9,8 +9,11 @@ const hpp = require("hpp");
 const morgan = require("morgan");
 const logger = require("./utils/logger");
 const { httpRequestDuration } = require("./utils/metric");
+const { swaggerUi, specs } = require("./config/swagger");
 
 const app = express();
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use(express.json({ limit: "10mb" })); // increase payload limit for webhook
 app.use(express.urlencoded({ extended: true, limit: "10mb" })); // for parsing application/x-www-form-urlencoded
