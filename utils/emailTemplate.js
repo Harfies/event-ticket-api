@@ -20,12 +20,12 @@ const ticketTemplate = (data, qrImage) => {
         <p><strong>🎫 Ticket ID:</strong> ${data.ticketId}</p>
         <p><strong>💳 Reference:</strong> ${data.reference}</p>
 
-        <p style="color:#555;">Please present this ticket at the venue.</p>
-      </div>
-
-        <h3>Scan QR Code</h3>
+            <h3>Scan QR Code</h3>
 
         <img src="${qrImage}" width="200" />
+
+        <p style="color:#555;">Please present this ticket at the venue.</p>
+      </div>
 
       <!-- FOOTER -->
       <div style="background:#f0f0f0; padding:10px; text-align:center; font-size:12px;">
