@@ -12,11 +12,8 @@ const sendEmail = async (to, subject, html, qrImage) => {
       html, // 👈 important
       attachments: [
         {
-          filename: "qr.png",
-          content: qrImage.split("base64,")[1], // extract base64 data
-          encoding: "base64",
-          path: qrImage,
-          cid: "qrcode", // same cid value as in the html img src
+          filename: "ticket.png",
+          content: qrImage.split("base64,")[1],
         },
       ],
     });
