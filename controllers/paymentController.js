@@ -166,6 +166,7 @@ exports.handleWebhook = asyncHandler(async (req, res) => {
           reference,
           date: eventData.date,
           location: eventData.location,
+          qrImage,
         });
 
         // ===============================
