@@ -1,31 +1,29 @@
 const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendEmail = async (to, subject, html, qrImage) => {
-  await transporter.sendMail({
-    from: `"Event Tickets 🎟️" <${process.env.EMAIL_USER}>`,
-    to,
-    subject,
-    html, // 👈 important
-    attachments: [
-      {
-        filename: "qr.png",
-        content: qrImage.split("base64,")[1], // extract base64 data
-        encoding: "base64",
-        path: qrImage,
-        cid: "qrcode", // same cid value as in the html img src
-      },
-    ],
-  });
+  try {
+    const data = await resend.emails.send({
+      from: "Event Tickets 🎟️  <onboarding@resend.dev>",
+      to,
+      subject,
+      html, // 👈 important
+      attachments: [
+        {
+          filename: "qr.png",
+          content: qrImage.split("base64,")[1], // extract base64 data
+          encoding: "base64",
+          path: qrImage,
+          cid: "qrcode", // same cid value as in the html img src
+        },
+      ],
+    });
+    console.log("✅ Email sent:", data);
+  } catch (error) {
+    console.log("❌ Email error:", error);
+  }
 };
 
 module.exports = sendEmail;
