@@ -10,12 +10,6 @@ const sendEmail = async (to, subject, html, qrImage) => {
       to,
       subject,
       html, // 👈 important
-      attachments: [
-        {
-          filename: "ticket.png",
-          content: qrImage.split("base64,")[1],
-        },
-      ],
     });
     console.log("✅ Email sent:", data);
   } catch (error) {

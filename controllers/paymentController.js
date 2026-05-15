@@ -173,7 +173,7 @@ exports.handleWebhook = asyncHandler(async (req, res) => {
         // 7. SEND EMAIL WITH QR
         // ===============================
 
-        await sendEmail(email, "Your Ticket 🎟️", html, qrImage);
+        await sendEmail(email, "Your Ticket 🎟️", html);
         logger.info("Ticket email sent successfully", {
           email,
           ticketId,
