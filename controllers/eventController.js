@@ -1,4 +1,5 @@
 const Event = require("../models/eventModel");
+const asyncHandler = require("../middleware/asyncHandler");
 const { createEventSchema } = require("../validators/eventValidator");
 
 exports.getEvents = async (req, res) => {
@@ -82,3 +83,53 @@ exports.createEvent = async (req, res) => {
     });
   }
 };
+
+// UPDATE EVENT
+exports.updateEvent = asyncHandler(async (req, res) => {
+  const event = await eventModel.findById(req.params.id);
+
+  // CHECK EVENT
+  if (!event) {
+    return res.status(404).json({
+      success: false,
+      message: "Event not found",
+    });
+  }
+
+  // UPDATE EVENT
+  const updatedEvent = await eventModel.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
+
+  res.status(200).json({
+    success: true,
+    message: "Event updated successfully",
+    event: updatedEvent,
+  });
+});
+
+// DELETE EVENT
+exports.deleteEvent = asyncHandler(async (req, res) => {
+  const event = await eventModel.findById(req.params.id);
+
+  // CHECK EVENT
+  if (!event) {
+    return res.status(404).json({
+      success: false,
+      message: "Event not found",
+    });
+  }
+
+  // DELETE EVENT
+  await event.deleteOne();
+
+  res.status(200).json({
+    success: true,
+    message: "Event deleted successfully",
+  });
+});

@@ -8,8 +8,6 @@ The system allows users to:
 - Purchase tickets securely via Paystack
 - Receive ticket emails with QR codes
 - Verify tickets in real time
-- Monitor application metrics
-- Track logs and errors
 
 ---
 
@@ -49,13 +47,6 @@ The system allows users to:
 - Joi input validation
 - Secure webhook signature verification
 - Environment variable protection
-
-## Observability
-
-- Winston structured logging
-- Morgan request logging
-- Prometheus metrics endpoint
-- Centralized error handling
 
 ---
 
@@ -192,34 +183,6 @@ GET /api/tickets/verify/:ticketId
 GET /api/tickets?email=user@gmail.com
 ```
 
----
-
-# Metrics Endpoint
-
-Prometheus metrics:
-
-```http
-GET /metrics
-```
-
----
-
-# Logging
-
-The application uses:
-
-- Winston for structured logging
-- Morgan for request logging
-
-Log files:
-
-```bash
-logs/error.log
-logs/combined.log
-```
-
----
-
 # Security Features
 
 - API rate limiting
@@ -243,14 +206,20 @@ Deployment Steps:
 
 ---
 
-# Future Improvements
+## 🚀 Future Improvements
 
-- Authentication & Authorization
 - Admin dashboard
 - Ticket scanning frontend
-- Background jobs with queues
-- Redis caching
 - Analytics dashboard
+- ⚡ Redis Caching for faster event retrieval and reduced database load
+- 🔄 Background Jobs (BullMQ) for email processing and async tasks
+- 🛡 MongoDB Sanitization & XSS protection for stronger API security
+- ✅ Request Validation (Joi/Zod) to prevent invalid data
+- ⚙ Standardized Error Handling for consistent API responses
+- 📊 Logging with Morgan + Winston for monitoring and debugging
+- 📈 Metrics & Tracing for performance monitoring in production
+- 🐳 Docker support for easier deployment and scalability
+- 🔐 Advanced Authentication & Role-Based Access Control (RBAC)
 
 ---
 

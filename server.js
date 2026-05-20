@@ -10,8 +10,11 @@ const morgan = require("morgan");
 const logger = require("./utils/logger");
 const { httpRequestDuration } = require("./utils/metric");
 const { swaggerUi, specs } = require("./config/swagger");
+const authRoute = require("./routes/authRoute");
 
 const app = express();
+
+app.use(express.json());
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
@@ -24,7 +27,6 @@ const stream = {
 };
 
 // middleware to read JSON body
-app.use(express.json());
 app.use(morgan("combined", { stream }));
 app.use((req, res, next) => {
   const end = httpRequestDuration.startTimer();
@@ -71,10 +73,10 @@ connectDB();
 app.use(errorHandler);
 
 // routes
+app.use("/api/auth", authRoute);
 app.use("/api/events", require("./routes/eventRoutes"));
 app.use("/api/payment", require("./routes/paymentRoutes"));
 app.use("/api/tickets", require("./routes/ticketRoutes"));
-app.use("/api/tickets", ticketRoutes);
 app.use(
   "/api/payment/webhook",
   express.json({
