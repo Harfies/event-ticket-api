@@ -98,6 +98,19 @@ exports.handleWebhook = asyncHandler(async (req, res) => {
         const reference = event.data.reference;
         const eventId = event.data.metadata?.eventID;
 
+        // IDEMPOTENCY CHECK
+        const existingTicket = await Ticket.findOne({
+          reference,
+        });
+
+        if (existingTicket) {
+          logger.warn("Duplicate webhook ignored", {
+            reference,
+          });
+
+          return res.sendStatus(200);
+        }
+
         logger.info("Payment metadata received", {
           metadata: event.data.metadata,
         });
@@ -179,6 +192,13 @@ exports.handleWebhook = asyncHandler(async (req, res) => {
           ticketId,
         });
       } catch (err) {
+        if (err.code === 11000) {
+          logger.warn("Duplicate payment reference", {
+            reference: err.keyValue.reference,
+          });
+
+          return res.sendStatus(200);
+        }
         logger.error("Webhook inner processing failed", {
           message: err.message,
           stack: err.stack,

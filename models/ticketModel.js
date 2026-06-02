@@ -9,7 +9,12 @@ const ticketSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    reference: String,
+    reference: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+
     paidAt: Date,
 
     //  prevent duplicate tickets for the same email and event

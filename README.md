@@ -16,15 +16,25 @@ The system allows users to:
 ## Event Management
 
 - Create events
+- Update events
+- Delete events
 - Fetch all events
 - Search events by name
 - Pagination support
+
+## Authentication
+
+- Admin registration
+- Admin login
+- JWT authentication
+- Protected admin routes
 
 ## Payment Processing
 
 - Paystack payment integration
 - Secure webhook verification
 - Metadata handling
+- Webhook idempotency to prevent duplicate ticket creation
 
 ## Ticket System
 
@@ -37,7 +47,7 @@ The system allows users to:
 ## Email System
 
 - Ticket confirmation emails
-- QR code email attachment
+- QR code delivery
 - HTML email templates
 
 ## Security
@@ -55,6 +65,7 @@ The system allows users to:
 - Node.js
 - Express.js
 - MongoDB + Mongoose
+- JWT Authentication
 - Paystack API
 - Nodemailer
 - QRCode
@@ -62,7 +73,7 @@ The system allows users to:
 - Winston
 - Morgan
 - Prometheus Client
-- Swagger
+- Swagger UI
 
 ---
 
@@ -70,9 +81,7 @@ The system allows users to:
 
 Swagger Documentation:
 
-```bash
 https://event-ticket-api.onrender.com/api-docs
-```
 
 ---
 
@@ -80,76 +89,49 @@ https://event-ticket-api.onrender.com/api-docs
 
 Production:
 
-````bash
-https://event-ticket-api.onrender.com```
+https://event-ticket-api.onrender.com
 
 Local:
 
-```bash
 http://localhost:3000
-````
-
----
-
-# Installation
-
-## Clone Repository
-
-```bash
-git clone https://github.com/Harfies/event-ticket-api.git
-```
-
-## Navigate Into Project
-
-```bash
-cd event-ticket-api
-```
-
-## Install Dependencies
-
-```bash
-npm install
-```
-
----
-
-# Running the Project
-
-## Development
-
-```bash
-npm run dev
-```
-
-## Production
-
-```bash
-npm start
-```
 
 ---
 
 # API Endpoints
 
+## Authentication
+
+### Register Admin
+
+POST /api/auth/register
+
+### Login Admin
+
+POST /api/auth/login
+
+---
+
 ## Events
 
-### Create Event
+### Create Event (Protected)
 
-```http
 POST /api/events
-```
 
 ### Get Events
 
-```http
 GET /api/events
-```
+
+### Update Event (Protected)
+
+PUT /api/events/:id
+
+### Delete Event (Protected)
+
+DELETE /api/events/:id
 
 ### Search Events
 
-```http
 GET /api/events?name=tech
-```
 
 ---
 
@@ -157,15 +139,11 @@ GET /api/events?name=tech
 
 ### Initialize Payment
 
-```http
 POST /api/payment/initialize
-```
 
 ### Paystack Webhook
 
-```http
 POST /api/payment/webhook
-```
 
 ---
 
@@ -173,23 +151,20 @@ POST /api/payment/webhook
 
 ### Verify Ticket
 
-```http
 GET /api/tickets/verify/:ticketId
-```
 
-### Get User Tickets
-
-```http
-GET /api/tickets?email=user@gmail.com
-```
+---
 
 # Security Features
 
-- API rate limiting
-- Secure environment variables
-- Joi request validation
-- Helmet HTTP security
-- Paystack webhook verification
+- JWT Authentication
+- Protected Admin Routes
+- API Rate Limiting
+- Joi Request Validation
+- Helmet HTTP Security
+- Paystack Webhook Verification
+- Webhook Idempotency
+- Secure Environment Variables
 
 ---
 
@@ -201,33 +176,31 @@ Deployment Steps:
 
 1. Push code to GitHub
 2. Connect repository to Render
-3. Add environment variables
+3. Configure environment variables
 4. Deploy application
 
 ---
 
-## 🚀 Future Improvements
+## Future Improvements
 
 - Admin dashboard
 - Ticket scanning frontend
 - Analytics dashboard
-- ⚡ Redis Caching for faster event retrieval and reduced database load
-- 🔄 Background Jobs (BullMQ) for email processing and async tasks
-- 🛡 MongoDB Sanitization & XSS protection for stronger API security
-- ✅ Request Validation (Joi/Zod) to prevent invalid data
-- ⚙ Standardized Error Handling for consistent API responses
-- 📊 Logging with Morgan + Winston for monitoring and debugging
-- 📈 Metrics & Tracing for performance monitoring in production
-- 🐳 Docker support for easier deployment and scalability
-- 🔐 Advanced Authentication & Role-Based Access Control (RBAC)
+- Redis caching
+- BullMQ background jobs
+- MongoDB sanitization & XSS protection
+- Metrics & tracing
+- Docker support
+- Role-Based Access Control (RBAC)
 
 ---
 
 # Author
 
 Afeez Akinsola
-github: @Harfies
-email: akinsolaafeez82@gmail.com
+
+GitHub: @Harfies
+Email: [akinsolaafeez82@gmail.com](mailto:akinsolaafeez82@gmail.com)
 
 Backend Developer
 
