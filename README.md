@@ -199,27 +199,27 @@ npm start
 ### Register
 
 - Admin Registration
-  ![Register] (images/create-admin.png)
+  ![Register](images/create-admin.png)
 
 ### Login
 
 - Admin Login
-  ![Login] (images/login_admin.png)
+  ![Login](images/login_admin.png)
 
 ### Create Event
 
 - Create Event
-  ![Create_Event] (images/create_event.png)
+  ![Create_Event](images/create_event.png)
 
-### Get Events
+### Get All Events
 
-- Get Events
-  ![Get_Events] (images/get_all_event.png)
+- Get All Events
+  ![Get_all_Events](images/get_all_event.png)
 
 ### Get Event By Name
 
 - Get Event By Name
-  ![Get_Event_By_Name] (images/get_event_by_name.png)
+  ![Get_Event_By_Name](images/get_event_by_name.png)
 
 ### Pay For Event
 
