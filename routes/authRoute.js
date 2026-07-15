@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const validate = require("../middleware/validate");
+const { registerSchema, loginSchema } = require("../validators/authValidator");
 
 const { registerAdmin, loginAdmin } = require("../controllers/authController");
 
@@ -35,7 +37,7 @@ const { registerAdmin, loginAdmin } = require("../controllers/authController");
  *       400:
  *         description: Admin already exists
  */
-router.post("/register", registerAdmin);
+router.post("/register", validate(registerSchema), registerAdmin);
 
 /**
  * @swagger
@@ -65,6 +67,6 @@ router.post("/register", registerAdmin);
  *       401:
  *         description: Invalid credentials
  */
-router.post("/login", loginAdmin);
+router.post("/login", validate(loginSchema), loginAdmin);
 
 module.exports = router;

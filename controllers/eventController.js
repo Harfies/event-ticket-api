@@ -15,19 +15,18 @@ exports.getEvents = async (req, res) => {
       };
     }
 
-    // 📄 Convert to numbers
     const pageNumber = parseInt(page);
     const limitNumber = parseInt(limit);
 
     const skip = (pageNumber - 1) * limitNumber;
 
-    // 📊 Fetch data
+    //  Fetch data
     const events = await Event.find(query)
       .skip(skip)
       .limit(limitNumber)
       .sort({ createdAt: -1 }); // newest first
 
-    // 📈 Total count
+    //  Total count
     const total = await Event.countDocuments(query);
 
     res.json({

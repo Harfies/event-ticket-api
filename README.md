@@ -1,211 +1,267 @@
 # Event Ticket API
 
-A production-ready backend API for event ticketing built with Node.js, Express, MongoDB, and Paystack.
+A production-ready RESTful API for an Event Ticket Booking System built with Node.js, Express.js, MongoDB, and Paystack.
 
-The system allows users to:
-
-- Create and manage events
-- Purchase tickets securely via Paystack
-- Receive ticket emails with QR codes
-- Verify tickets in real time
+The API allows users to browse available events, purchase tickets securely through Paystack, receive ticket confirmation emails with QR codes, and verify tickets in real time. Event management is restricted to authenticated administrators.
 
 ---
 
-# Features
+## Features
 
-## Event Management
+### Authentication
 
-- Create events
-- Update events
-- Delete events
-- Fetch all events
-- Search events by name
-- Pagination support
+- Admin Registration
+- Admin Login
+- JWT Authentication
+- Protected Admin Routes
 
-## Authentication
+### Event Management
 
-- Admin registration
-- Admin login
-- JWT authentication
-- Protected admin routes
+- Create Event (Admin Only)
+- Update Event (Admin Only)
+- Delete Event (Admin Only)
+- Get All Events
+- Search Events by Name
+- Pagination Support
 
-## Payment Processing
+### Payment Processing
 
-- Paystack payment integration
-- Secure webhook verification
-- Metadata handling
-- Webhook idempotency to prevent duplicate ticket creation
+- Paystack Payment Integration
+- Secure Webhook Verification
+- Metadata Handling
+- Webhook Idempotency to prevent duplicate ticket creation
 
-## Ticket System
+### Ticket Management
 
-- Automatic ticket generation
-- Unique ticket IDs
-- QR code generation
-- Ticket verification endpoint
-- Prevent duplicate ticket usage
+- Automatic Ticket Generation
+- Unique Ticket IDs
+- QR Code Generation
+- Ticket Verification
+- Duplicate Ticket Prevention
 
-## Email System
+### Email Notifications
 
-- Ticket confirmation emails
-- QR code delivery
-- HTML email templates
+- HTML Email Templates
+- Ticket Confirmation Emails
+- QR Code Attachment
 
-## Security
+### Security
 
-- Helmet security headers
-- Rate limiting
-- Joi input validation
-- Secure webhook signature verification
-- Environment variable protection
+- JWT Authentication
+- Helmet Security Headers
+- Rate Limiting
+- Joi Request Validation
+- Environment Variable Protection
+- Paystack Webhook Signature Verification
+
+### Monitoring
+
+- Morgan Request Logging
+- Winston Application Logging
+- Prometheus Metrics
 
 ---
 
-# Tech Stack
+## Tech Stack
 
 - Node.js
 - Express.js
-- MongoDB + Mongoose
-- JWT Authentication
+- MongoDB & Mongoose
+- JWT
 - Paystack API
 - Nodemailer
 - QRCode
 - Joi
-- Winston
+- Helmet
 - Morgan
+- Winston
 - Prometheus Client
 - Swagger UI
 
 ---
 
-# API Documentation
+## API Documentation
 
-Swagger Documentation:
+Swagger Documentation
 
+```
 https://event-ticket-api.onrender.com/api-docs
+```
 
 ---
 
-# Base URL
+## Base URL
 
-Production:
+Production
 
+```
 https://event-ticket-api.onrender.com
+```
 
-Local:
+Local
 
+```
 http://localhost:3000
+```
 
 ---
 
-# API Endpoints
+## API Endpoints
 
-## Authentication
+### Authentication
 
-### Register Admin
+| Method | Endpoint             | Description       |
+| ------ | -------------------- | ----------------- |
+| POST   | `/api/auth/register` | Register an Admin |
+| POST   | `/api/auth/login`    | Login an Admin    |
 
-POST /api/auth/register
+### Events
 
-### Login Admin
+| Method | Endpoint          | Description              |
+| ------ | ----------------- | ------------------------ |
+| GET    | `/api/events`     | Get All Events           |
+| POST   | `/api/events`     | Create Event (Protected) |
+| PUT    | `/api/events/:id` | Update Event (Protected) |
+| DELETE | `/api/events/:id` | Delete Event (Protected) |
 
-POST /api/auth/login
+### Payments
 
----
+| Method | Endpoint                  | Description        |
+| ------ | ------------------------- | ------------------ |
+| POST   | `/api/payment/initialize` | Initialize Payment |
+| POST   | `/api/payment/webhook`    | Paystack Webhook   |
 
-## Events
+### Tickets
 
-### Create Event (Protected)
-
-POST /api/events
-
-### Get Events
-
-GET /api/events
-
-### Update Event (Protected)
-
-PUT /api/events/:id
-
-### Delete Event (Protected)
-
-DELETE /api/events/:id
-
-### Search Events
-
-GET /api/events?name=tech
+| Method | Endpoint                        | Description   |
+| ------ | ------------------------------- | ------------- |
+| GET    | `/api/tickets/verify/:ticketId` | Verify Ticket |
 
 ---
 
-## Payments
-
-### Initialize Payment
-
-POST /api/payment/initialize
-
-### Paystack Webhook
-
-POST /api/payment/webhook
-
----
-
-## Tickets
-
-### Verify Ticket
-
-GET /api/tickets/verify/:ticketId
-
----
-
-# Security Features
+## Security Features
 
 - JWT Authentication
 - Protected Admin Routes
 - API Rate Limiting
 - Joi Request Validation
-- Helmet HTTP Security
-- Paystack Webhook Verification
+- Helmet Security Headers
+- Secure Webhook Verification
 - Webhook Idempotency
-- Secure Environment Variables
+- Environment Variable Protection
 
 ---
 
-# Deployment
+## Installation
+
+Clone the repository
+
+```bash
+git clone https://github.com/Harfies/event-ticket-api.git
+```
+
+Navigate into the project
+
+```bash
+cd event-ticket-api
+```
+
+Install dependencies
+
+```bash
+npm install
+```
+
+Create a `.env` file and configure the required environment variables.
+
+Run the application
+
+Development
+
+```bash
+npm run dev
+```
+
+Production
+
+```bash
+npm start
+```
+
+---
+
+## Screenshots
+
+### Swagger Documentation
+
+### Postman Testing
+
+### Register
+
+- Admin Registration
+  ![Register] (images/create-admin.png)
+
+### Login
+
+- Admin Login
+  ![Login] (images/login_admin.png)
+
+### Create Event
+
+- Create Event
+  ![Create_Event] (images/create_event.png)
+
+### Get Events
+
+- Get Events
+  ![Get_Events] (images/get_all_event.png)
+
+### Get Event By Name
+
+- Get Event By Name
+  ![Get_Event_By_Name] (images/get_event_by_name.png)
+
+### Pay For Event
+
+- Initialize Payment
+  ![Pay_For_Event](images/pay_for_event.png)
+
+## Deployment
 
 Hosted on Render.
 
-Deployment Steps:
+Deployment Steps
 
-1. Push code to GitHub
-2. Connect repository to Render
-3. Configure environment variables
-4. Deploy application
+1. Push the project to GitHub.
+2. Connect the repository to Render.
+3. Configure the required environment variables.
+4. Deploy the application.
 
 ---
 
 ## Future Improvements
 
-- Admin dashboard
-- Ticket scanning frontend
-- Analytics dashboard
-- Redis caching
-- BullMQ background jobs
-- MongoDB sanitization & XSS protection
-- Metrics & tracing
-- Docker support
+- Redis Caching
+- BullMQ Background Jobs
+- Docker Support
+- MongoDB Sanitization
+- Metrics & Tracing
 - Role-Based Access Control (RBAC)
+- Admin Dashboard
+- Analytics Dashboard
 
 ---
 
-# Author
+## Author
 
-Afeez Akinsola
+**Afeez Akinsola**
 
-GitHub: @Harfies
-Email: [akinsolaafeez82@gmail.com](mailto:akinsolaafeez82@gmail.com)
+GitHub: https://github.com/Harfies
 
-Backend Developer
+Email: akinsolaafeez82@gmail.com
 
 ---
 
-# License
+## License
 
 MIT License

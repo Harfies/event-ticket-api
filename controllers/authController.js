@@ -2,9 +2,7 @@ const Admin = require("../models/adminModel");
 const generateToken = require("../utils/generateToken");
 const asyncHandler = require("../middleware/asyncHandler");
 
-// ===============================
 // REGISTER ADMIN
-// ===============================
 exports.registerAdmin = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -47,7 +45,6 @@ exports.registerAdmin = async (req, res) => {
 };
 
 // LOGIN ADMIN
-// ===============================
 exports.loginAdmin = async (req, res) => {
   try {
     const { email, password } = req.body;

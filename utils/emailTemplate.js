@@ -22,7 +22,7 @@ const ticketTemplate = (data, qrImage) => {
 
         <h3>Download and Scan QR Code in the png file attached</h3>
 
-        <img src="${qrImage}" width="200" />
+        
 
         <p style="color:#555;">Please present this ticket at the venue.</p>
       </div>

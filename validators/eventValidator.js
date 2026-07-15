@@ -5,5 +5,5 @@ exports.createEventSchema = Joi.object({
   price: Joi.number().required(),
   location: Joi.string().required(),
   date: Joi.date().required(),
-  description: Joi.string().optional(), // ✅ ADD THIS
+  description: Joi.string().optional(), 
 });

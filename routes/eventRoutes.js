@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const protect = require("../middleware/authMiddleware");
-
+const adminOnly = require("../middleware/adminMiddleware");
 const {
   getEvents,
   createEvent,
@@ -45,7 +45,7 @@ const { createEventSchema } = require("../validators/eventValidator");
  */
 
 // CREATE event
-router.post("/", protect, validate(createEventSchema), createEvent);
+router.post("/", protect, adminOnly, validate(createEventSchema), createEvent);
 
 /**
  * @swagger
@@ -122,7 +122,7 @@ router.get("/", getEvents);
  */
 
 // UPDATE EVENT
-router.put("/:id", protect, updateEvent);
+router.put("/:id", protect, adminOnly, updateEvent);
 
 /**
  * @swagger
@@ -148,7 +148,7 @@ router.put("/:id", protect, updateEvent);
  *         description: Event not found
  */
 // DELETE EVENT
-router.delete("/:id", protect, deleteEvent);
+router.delete("/:id", protect, adminOnly, deleteEvent);
 
 // export router
 module.exports = router;
