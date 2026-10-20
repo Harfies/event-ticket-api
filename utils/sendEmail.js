@@ -1,25 +1,43 @@
-const nodemailer = require("nodemailer");
-const { Resend } = require("resend");
+const { BrevoClient } = require("@getbrevo/brevo");
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const brevo = new BrevoClient({
+  apiKey: process.env.BREVO_API_KEY,
+});
 
 const sendEmail = async (to, subject, html, qrImage) => {
   try {
-    const data = await resend.emails.send({
-      from: "Event Tickets 🎟️  <onboarding@resend.dev>",
-      to,
+    // Prepare the email
+    const email = {
+      sender: {
+        name: process.env.BREVO_SENDER_NAME || "Event Tickets",
+        email: process.env.BREVO_SENDER_EMAIL,
+      },
+      to: [{ email: to }],
       subject,
-      html, // 👈 important
-      attachments: [
+      htmlContent: html,
+    };
+
+    // Attach the QR image if one was provided
+    if (qrImage) {
+      const base64Content = qrImage.replace(/^data:image\/\w+;base64,/, "");
+
+      email.attachment = [
         {
-          filename: "ticket.png",
-          content: qrImage.split("base64,")[1],
+          name: "ticket.png",
+          content: base64Content,
         },
-      ],
-    });
-    console.log("✅ Email sent:", data);
+      ];
+    }
+
+    const result = await brevo.transactionalEmails.sendTransacEmail(email);
+
+    console.log("✅ Email accepted by Brevo:", result.messageId);
+
+    return result;
   } catch (error) {
-    console.log("❌ Email error:", error);
+    console.error("❌ Email error:", error.message || error);
+
+    throw error;
   }
 };
 
