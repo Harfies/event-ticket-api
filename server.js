@@ -73,12 +73,12 @@ connectDB();
 app.use(errorHandler);
 
 // routes
-app.use("/api/auth", authRoute);
-app.use("/api/events", require("./routes/eventRoutes"));
-app.use("/api/payment", require("./routes/paymentRoutes"));
-app.use("/api/tickets", require("./routes/ticketRoutes"));
+app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/events", require("./routes/eventRoutes"));
+app.use("/api/v1/payment", require("./routes/paymentRoutes"));
+app.use("/api/v1/tickets", require("./routes/ticketRoutes"));
 app.use(
-  "/api/payment/webhook",
+  "/api/v1/payment/webhook",
   express.json({
     verify: (req, res, buf) => {
       req.rawBody = buf;
