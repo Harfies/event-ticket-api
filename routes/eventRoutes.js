@@ -26,27 +26,40 @@ const { createEventSchema } = require("../validators/eventValidator");
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - name
+ *               - price
+ *               - location
+ *               - date
  *             properties:
  *               name:
  *                 type: string
- *                 example: Tech Event
+ *                 example: "Tech Event"
  *               description:
  *                 type: string
- *                 example: A tech event for developers
+ *                 example: "A tech event for developers"
  *               date:
  *                 type: string
- *                 example: "2023-12-25"
+ *                 format: date
+ *                 example: "2027-12-25"
+ *                 description: "Use YYYY-MM-DD. The date must be today or in the future."
  *               location:
  *                 type: string
- *                example: "Ikeja, Lagos"
+ *                 example: "Ikeja, Lagos"
+ *                 description: "Enter the city and location."
  *               price:
  *                 type: number
+ *                 minimum: 0
  *                 example: 10000
  *     responses:
  *       201:
  *         description: Event created successfully
+ *       400:
+ *         description: Invalid event details
  *       401:
  *         description: Unauthorized
+ *       403:
+ *         description: Admin access required
  */
 
 // CREATE event
