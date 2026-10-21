@@ -71,22 +71,37 @@ exports.initializePayment = asyncHandler(async (req, res) => {
 // SECURE WEBHOOK
 exports.handleWebhook = asyncHandler(async (req, res) => {
   try {
-    // 1. VERIFY PAYSTACK SIGNATURE
-    const hash = crypto
-      .createHmac("sha512", process.env.PAYSTACK_SECRET_KEY)
-      .update(JSON.stringify(req.body))
+    const signature = req.headers["x-paystack-signature"];
+    const secretKey = process.env.PAYSTACK_SECRET_KEY;
+
+    if (!req.rawBody || !signature || !secretKey) {
+      logger.warn("Webhook signature verification prerequisites missing");
+      return res.sendStatus(401);
+    }
+
+    const expectedHash = crypto
+      .createHmac("sha512", secretKey)
+      .update(req.rawBody)
       .digest("hex");
 
-    if (hash !== req.headers["x-paystack-signature"]) {
+    // Compare hashes safely and reject malformed signatures.
+    const expectedBuffer = Buffer.from(expectedHash, "hex");
+    const receivedBuffer = Buffer.from(signature, "hex");
+
+    if (
+      receivedBuffer.length !== expectedBuffer.length ||
+      !crypto.timingSafeEqual(expectedBuffer, receivedBuffer)
+    ) {
       logger.warn("Invalid Paystack webhook signature");
       return res.sendStatus(401);
     }
 
     logger.info("Paystack signature verified");
+
     const event = req.body;
 
-    logger.info("📩 Webhook received", {
-      event: event.event,
+    logger.info("Paystack webhook received", {
+      event: event?.event,
     });
 
     // ===============================
@@ -116,7 +131,7 @@ exports.handleWebhook = asyncHandler(async (req, res) => {
         });
         if (!eventId) {
           logger.warn("❌ No event ID found in Paystack metadata");
-          return;
+          return res.sendStatus(400);
         }
 
         const eventData = await eventModel.findById(eventId);
@@ -124,8 +139,9 @@ exports.handleWebhook = asyncHandler(async (req, res) => {
         if (!eventData) {
           logger.warn("Event not found during webhook processing", {
             eventId,
+            reference,
           });
-          return;
+          return res.sendStatus(404);
         }
 
         logger.info("Event found", {
@@ -161,7 +177,7 @@ exports.handleWebhook = asyncHandler(async (req, res) => {
         // ===============================
         // 5. GENERATE QR CODE
         // ===============================
-        const qrData = `https://your-app-name.onrender.com/api/tickets/verify/${ticketId}`;
+        const qrData = `https://event-ticket-api.onrender.com/api/tickets/verify/${ticketId}`;
         const qrImage = await generateQR(qrData);
 
         if (!qrImage) {

@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const ticketRoutes = require("./routes/ticketRoutes");
-const rateLimit = require("express-rate-limit");
+const { apiLimiter } = require("./middleware/rateLimiter");
 const errorHandler = require("./middleware/errorHandler");
 const helmet = require("helmet");
 const cors = require("cors");
@@ -14,12 +14,24 @@ const authRoute = require("./routes/authRoute");
 
 const app = express();
 
-app.use(express.json());
+app.use(
+  express.json({
+    limit: "10mb",
+    verify: (req, res, buf) => {
+      if (req.originalUrl.startsWith("/api/v1/payment/webhook")) {
+        req.rawBody = Buffer.from(buf);
+      }
+    },
+  }),
+);
 
+app.use(
+  express.urlencoded({
+    extended: true,
+    limit: "10mb",
+  }),
+);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
-
-app.use(express.json({ limit: "10mb" })); // increase payload limit for webhook
-app.use(express.urlencoded({ extended: true, limit: "10mb" })); // for parsing application/x-www-form-urlencoded
 
 // send morgan logs into winston
 const stream = {
@@ -53,17 +65,7 @@ app.use(
   }),
 );
 
-// rate limiter to prevent abuse
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: {
-    success: false,
-    message: "Too many requests, please try again later",
-  },
-});
-
-app.use(limiter);
+app.use("/api", apiLimiter);
 
 // connect to DB
 const connectDB = require("./config/db");
