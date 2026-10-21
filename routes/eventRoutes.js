@@ -29,14 +29,19 @@ const { createEventSchema } = require("../validators/eventValidator");
  *             properties:
  *               name:
  *                 type: string
+ *                 example: Tech Event
  *               description:
  *                 type: string
+ *                 example: A tech event for developers
  *               date:
  *                 type: string
+ *                 example: "2023-12-25"
  *               location:
  *                 type: string
+ *                example: "Ikeja, Lagos"
  *               price:
  *                 type: number
+ *                 example: 10000
  *     responses:
  *       201:
  *         description: Event created successfully

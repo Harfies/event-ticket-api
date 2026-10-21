@@ -13,12 +13,12 @@ const options = {
 
     servers: [
       {
-        url: "http://localhost:3000",
-        description: "Local server",
-      },
-      {
         url: "https://event-ticket-api.onrender.com",
         description: "Production server",
+      },
+      {
+        url: "http://localhost:3000",
+        description: "Local server",
       },
     ],
 
