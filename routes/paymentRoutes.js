@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { paymentLimiter } = require("./middleware/rateLimiter");
-
+const { paymentLimiter } = require("../middleware/rateLimiter");
 const validate = require("../middleware/validate");
 
 const { initializePaymentSchema } = require("../validators/paymentValidator");
