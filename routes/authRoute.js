@@ -7,7 +7,7 @@ const { registerAdmin, loginAdmin } = require("../controllers/authController");
 
 /**
  * @swagger
- * /api/auth/register:
+ * /api/v1/auth/register:
  *   post:
  *     summary: Register a new admin
  *     tags: [Auth]
@@ -41,7 +41,7 @@ router.post("/register", validate(registerSchema), registerAdmin);
 
 /**
  * @swagger
- * /api/auth/login:
+ * /api/v1/auth/login:
  *   post:
  *     summary: Login admin
  *     tags: [Auth]

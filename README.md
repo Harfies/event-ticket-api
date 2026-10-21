@@ -112,30 +112,30 @@ http://localhost:3000
 
 | Method | Endpoint             | Description       |
 | ------ | -------------------- | ----------------- |
-| POST   | `/api/auth/register` | Register an Admin |
-| POST   | `/api/auth/login`    | Login an Admin    |
+| POST   | `/api/v1/auth/register` | Register an Admin |
+| POST   | `/api/v1/auth/login`    | Login an Admin    |
 
 ### Events
 
 | Method | Endpoint          | Description              |
 | ------ | ----------------- | ------------------------ |
-| GET    | `/api/events`     | Get All Events           |
-| POST   | `/api/events`     | Create Event (Protected) |
-| PUT    | `/api/events/:id` | Update Event (Protected) |
-| DELETE | `/api/events/:id` | Delete Event (Protected) |
+| GET    | `/api/v1/events`     | Get All Events           |
+| POST   | `/api/v1/events`     | Create Event (Protected) |
+| PUT    | `/api/v1/events/:id` | Update Event (Protected) |
+| DELETE | `/api/v1/events/:id` | Delete Event (Protected) |
 
 ### Payments
 
 | Method | Endpoint                  | Description        |
 | ------ | ------------------------- | ------------------ |
-| POST   | `/api/payment/initialize` | Initialize Payment |
-| POST   | `/api/payment/webhook`    | Paystack Webhook   |
+| POST   | `/api/v1/payment/initialize` | Initialize Payment |
+| POST   | `/api/v1/payment/webhook`    | Paystack Webhook   |
 
 ### Tickets
 
 | Method | Endpoint                        | Description   |
 | ------ | ------------------------------- | ------------- |
-| GET    | `/api/tickets/verify/:ticketId` | Verify Ticket |
+| GET    | `/api/v1/tickets/verify/:ticketId` | Verify Ticket |
 
 ---
 

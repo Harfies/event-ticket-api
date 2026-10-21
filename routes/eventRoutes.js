@@ -14,7 +14,7 @@ const { createEventSchema } = require("../validators/eventValidator");
 
 /**
  * @swagger
- * /api/events:
+ * /api/v1/events:
  *   post:
  *     summary: Create a new event
  *     tags: [Events]
@@ -49,7 +49,7 @@ router.post("/", protect, adminOnly, validate(createEventSchema), createEvent);
 
 /**
  * @swagger
- * /api/events:
+ * /api/v1/events:
  *   get:
  *     summary: Get all events or search by name
  *     tags: [Events]
@@ -82,7 +82,7 @@ router.get("/", getEvents);
 
 /**
  * @swagger
- * /api/events/{id}:
+ * /api/v1/events/{id}:
  *   put:
  *     summary: Update an event (Admin only)
  *     tags: [Events]
@@ -126,7 +126,7 @@ router.put("/:id", protect, adminOnly, updateEvent);
 
 /**
  * @swagger
- * /api/events/{id}:
+ * /api/v1/events/{id}:
  *   delete:
  *     summary: Delete an event (Admin only)
  *     tags: [Events]

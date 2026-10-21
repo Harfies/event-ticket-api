@@ -12,7 +12,7 @@ const { verifyTicket } = require("../controllers/ticketController");
 
 /**
  * @swagger
- * /api/tickets/verify/{ticketId}:
+ * /api/v1/tickets/verify/{ticketId}:
  *   get:
  *     summary: Verify a ticket
  *     tags: [Tickets]

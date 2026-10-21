@@ -16,7 +16,7 @@ const paymentController = require("../controllers/paymentController");
 
 /**
  * @swagger
- * /api/payment/initialize:
+ * /api/v1/payment/initialize:
  *   post:
  *     summary: Initialize Paystack payment
  *     tags: [Payments]
@@ -55,7 +55,7 @@ router.post(
 
 /**
  * @swagger
- * /api/payment/webhook:
+ * /api/v1/payment/webhook:
  *   post:
  *     summary: Paystack webhook endpoint
  *     tags: [Payments]

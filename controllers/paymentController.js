@@ -177,7 +177,7 @@ exports.handleWebhook = asyncHandler(async (req, res) => {
         // ===============================
         // 5. GENERATE QR CODE
         // ===============================
-        const qrData = `https://event-ticket-api.onrender.com/api/tickets/verify/${ticketId}`;
+        const qrData = `https://event-ticket-api.onrender.com/api/v1/tickets/verify/${ticketId}`;
         const qrImage = await generateQR(qrData);
 
         if (!qrImage) {
